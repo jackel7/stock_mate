@@ -8,19 +8,11 @@ export async function GET() {
     const [
       { count: productsCount, data: allProducts },
       { count: lowStockCount },
-      { count: transactionsCount },
       { count: vendorsCount },
-      { data: transactions }
     ] = await Promise.all([
       supabase.from("products").select("*", { count: "exact" }),
       supabase.from("products").select("*", { count: "exact", head: true }).lt("quantity", 10),
-      supabase.from("transactions").select("*", { count: "exact", head: true }),
       supabase.from("vendors").select("*", { count: "exact", head: true }),
-      supabase
-        .from("transactions")
-        .select("*, products:transaction_items(product_id)")
-        .order("created_at", { ascending: false })
-        .limit(5)
     ]);
 
     // Calculate approximate total value
@@ -30,11 +22,11 @@ export async function GET() {
       stats: {
         products: productsCount || 0,
         lowStock: lowStockCount || 0,
-        transactions: transactionsCount || 0,
+        transactions: 0, 
         vendors: vendorsCount || 0,
         totalValue: totalVal,
       },
-      recentActivity: transactions || []
+      recentActivity: []
     });
   } catch (error) {
     console.error("Dashboard API Error:", error);

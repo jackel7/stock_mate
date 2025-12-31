@@ -26,8 +26,6 @@ const navItems = [
   { name: "Inventory", href: "/inventory", icon: Package },
   { name: "Categories", href: "/categories", icon: Tag },
   { name: "Vendors", href: "/vendors", icon: Users },
-  { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },
-  { name: "Reports", href: "/reports", icon: BarChart3 },
 ];
 
 export function Sidebar({ isOpen, isCollapsed, toggleCollapse, onCloseMobile }) {

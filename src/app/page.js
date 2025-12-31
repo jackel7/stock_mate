@@ -117,66 +117,9 @@ export default function Dashboard() {
       {/* Main Content Areas */}
       <div className="grid gap-6 md:grid-cols-7 ">
         {/* Recent Activity */}
-        <Card className="col-span-4 md:col-span-4 lg:col-span-5 shadow-lg border-surface-200">
-          <CardHeader>
-            <CardTitle className="text-lg text-surface-900">Recent Transactions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {recentActivity.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center text-surface-400">
-                    <div className="bg-surface-50 p-4 rounded-full mb-3">
-                        <ArrowRightLeft className="h-8 w-8 text-surface-300" />
-                    </div>
-                    <p>No recent transactions found.</p>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {recentActivity.map((t, i) => (
-                        <div key={t.id || i} className="flex items-center justify-between group p-4 rounded-xl hover:bg-surface-50 transition-all border border-transparent hover:border-surface-100">
-                            <div className="flex items-center space-x-4">
-                                <div className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-sm transition-colors ${
-                                    t.type === 'IN' ? 'bg-green-100 text-green-700' : 
-                                    t.type === 'OUT' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
-                                }`}>
-                                   {t.type === 'IN' ? <TrendingDown className="h-6 w-6" /> : 
-                                    t.type === 'OUT' ? <TrendingUp className="h-6 w-6" /> : <ArrowRightLeft className="h-6 w-6" />}
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-sm font-bold text-surface-900 group-hover:text-brand-700 transition-colors">
-                                        {t.type === 'IN' ? 'Purchase Order' : t.type === 'OUT' ? 'Sales Order' : 'Stock Adjustment'}
-                                    </p>
-                                    <p className="text-xs text-surface-500 font-medium">{new Date(t.created_at).toLocaleDateString()} • {new Date(t.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                                </div>
-                            </div>
-                            <div className={`text-base font-bold ${t.type === 'IN' ? 'text-green-600' : t.type === 'OUT' ? 'text-blue-600' : 'text-surface-600'}`}>
-                                {t.type === 'IN' ? '-' : '+'}${t.total_amount}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-          </CardContent>
-        </Card>
 
-        {/* Pro Tip Card */}
-        <div className="col-span-3 md:col-span-3 lg:col-span-2 space-y-6">
-             <Card className="bg-gradient-to-br from-brand-600 to-brand-800 text-white border-none shadow-xl shadow-brand-900/20 overflow-hidden relative">
-                <div className="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white/10 blur-xl"></div>
-                <div className="absolute bottom-0 left-0 -mb-4 -ml-4 h-20 w-20 rounded-full bg-accent-500/20 blur-xl"></div>
-                
-                <CardHeader>
-                    <CardTitle className="text-white flex items-center gap-2">
-                        <span className="bg-white/20 p-1 rounded">💡</span> Pro Tip
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-brand-50 text-sm leading-relaxed">
-                        Use the <span className="font-bold text-white">AI Assistant</span> to quickly analyze stock trends. Try asking: <br/>
-                        <span className="italic text-brand-200">"Which products are selling fastest?"</span>
-                    </p>
-                </CardContent>
-             </Card>
-        </div>
+
+
       </div>
     </div>
   );
