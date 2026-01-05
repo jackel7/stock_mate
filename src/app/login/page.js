@@ -3,124 +3,103 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Lock, Mail, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
 
-  const handleAuth = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setMessage(null);
 
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        setMessage("Check your email for the confirmation link!");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        router.push("/");
-        router.refresh();
+      // 1. Check for Dummy Admin Credentials
+      if (email === "admin@stockmate.com" && password === "admin123") {
+        localStorage.setItem("stockmate_mock_session", "true");
+        // Force a hard reload to ensure AuthProvider picks up the localStorage change immediately
+        window.location.href = "/"; 
+        return;
       }
+
+      // 2. Fallback to Real Supabase Login
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      
+      router.push("/");
+      router.refresh();
+
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      setError(err.message || "Invalid login credentials.");
+      setLoading(false); // Only stop loading on error, success redirects
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-brand-600 p-8 text-center">
-            <h1 className="text-3xl font-bold text-white tracking-tight">Stock Mate</h1>
-            <p className="text-brand-100 mt-2 text-sm">Inventory Management System</p>
-        </div>
-        
-        <div className="p-8">
-            <h2 className="text-xl font-semibold text-gray-800 text-center mb-6">
-                {isSignUp ? "Create an Account" : "Welcome Back"}
-            </h2>
-
-            {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg text-center">
-                    {error}
-                </div>
-            )}
-
-            {message && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-100 text-green-600 text-sm rounded-lg text-center">
-                    {message}
-                </div>
-            )}
-
-            <form onSubmit={handleAuth} className="space-y-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Email Address</label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input 
-                            type="email" 
-                            required 
-                            className="pl-10" 
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Password</label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input 
-                            type="password" 
-                            required 
-                            className="pl-10" 
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <Button 
-                    type="submit" 
-                    className="w-full bg-brand-600 hover:bg-brand-700" 
-                    disabled={loading}
-                >
-                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    {loading ? "Processing..." : (isSignUp ? "Sign Up" : "Sign In")}
-                </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-                <button 
-                    onClick={() => setIsSignUp(!isSignUp)}
-                    className="text-sm text-brand-600 hover:text-brand-700 font-medium hover:underline"
-                >
-                    {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
-                </button>
+    <div className="min-h-screen grid place-items-center bg-gray-50">
+      <div className="w-full max-w-[400px] p-6">
+        {/* Minimal Header */}
+        <div className="text-center mb-10">
+            <div className="h-12 w-12 bg-gray-900 text-white rounded-xl mx-auto flex items-center justify-center mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22v-9"/></svg>
             </div>
+            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Sign in to StockMate</h1>
+            <p className="text-sm text-gray-500 mt-2">Enter your credentials to access the dashboard.</p>
         </div>
+
+        {/* Clean Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <form onSubmit={handleLogin} className="space-y-5">
+                {error && (
+                    <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg text-center">
+                        {error}
+                    </div>
+                )}
+
+                <div className="space-y-1.5">
+                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide">Email</label>
+                    <input 
+                        type="email" 
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="block w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all outline-none text-gray-900 sm:text-sm"
+                        placeholder="admin@stockmate.com"
+                    />
+                </div>
+
+                <div className="space-y-1.5">
+                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide">Password</label>
+                    <input 
+                        type="password" 
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all outline-none text-gray-900 sm:text-sm"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign in"}
+                </button>
+            </form>
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-8">
+            Created for University Final Project
+        </p>
       </div>
     </div>
   );

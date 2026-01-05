@@ -10,15 +10,16 @@ import {
     ArrowRightLeft, 
     BarChart3,
     LogOut,
-    ChevronLeft,
-    ChevronRight,
-    Settings,
-    Menu,
-    X,
-    Database,
-    Grid,
-    PanelLeft
+    ChevronLeft, 
+    ChevronRight, 
+    Settings, 
+    Menu, 
+    X, 
+    Database, 
+    Grid, 
+    PanelLeft 
 } from "lucide-react";
+import { useAuth } from "../params/AuthProvider";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -30,6 +31,7 @@ const navItems = [
 
 export function Sidebar({ isOpen, isCollapsed, toggleCollapse, onCloseMobile }) {
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   return (
     <>
@@ -109,7 +111,9 @@ export function Sidebar({ isOpen, isCollapsed, toggleCollapse, onCloseMobile }) 
         {/* Footer Actions */}
         <div className="p-4 border-t border-brand-900/50 space-y-2 bg-brand-950/50">
 
-             <button className={cn(
+             <button 
+                 onClick={() => signOut()}
+                 className={cn(
                  "flex w-full items-center rounded-xl px-4 py-3 text-sm font-medium text-brand-200 hover:bg-red-500/10 hover:text-red-400 transition-colors",
                  isCollapsed && "justify-center px-0"
              )}>

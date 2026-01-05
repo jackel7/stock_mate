@@ -9,11 +9,15 @@ export const metadata = {
   description: "Student-level General Purpose Inventory System",
 };
 
+import { AuthProvider } from "@/components/params/AuthProvider";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <MainLayout>{children}</MainLayout>
+        <AuthProvider>
+            <MainLayout>{children}</MainLayout>
+        </AuthProvider>
       </body>
     </html>
   );

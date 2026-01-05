@@ -15,18 +15,33 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const checkSession = async () => {
+        // 1. Check for Dummy Admin (Local Storage)
+        const mockSession = localStorage.getItem("stockmate_mock_session");
+        if (mockSession) {
+            setUser({ email: "admin@stockmate.com", role: "admin", id: "dummy-admin-id" });
+            setLoading(false);
+            return;
+        }
+
+        // 2. Check Supabase Session
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        setLoading(false);
+    };
+
+    checkSession();
 
     // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // If we are in mock mode, ignore Supabase updates (unless explicit sign out)
+      if (localStorage.getItem("stockmate_mock_session")) return;
+      
       setUser(session?.user ?? null);
       setLoading(false);
       
       if (!session && pathname !== "/login") {
-         router.push("/login"); // Redirect to login if signed out
+         router.push("/login"); 
       }
     });
 
@@ -44,6 +59,14 @@ export function AuthProvider({ children }) {
       }
   }, [user, loading, pathname, router]);
 
+  // Unified Sign Out
+  const signOut = async () => {
+      localStorage.removeItem("stockmate_mock_session"); // Clear mock
+      await supabase.auth.signOut(); // Clear Supabase
+      setUser(null);
+      router.push("/login");
+  };
+
   if (loading) {
     return (
         <div className="h-screen w-screen flex items-center justify-center bg-gray-50">
@@ -56,7 +79,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signOut: () => supabase.auth.signOut() }}>
+    <AuthContext.Provider value={{ user, signOut }}>
       {children}
     </AuthContext.Provider>
   );

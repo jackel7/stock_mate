@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
-import { AgentFab } from "../agent/AgentFab";
-import { AgentModal } from "../agent/AgentModal";
+
 import { cn } from "@/lib/utils";
 
 export function MainLayout({ children }) {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile toggle
   const [isCollapsed, setIsCollapsed] = useState(false); // Desktop collapse
-  const [agentOpen, setAgentOpen] = useState(false);
+
+  // Don't show layout on login page
+  if (pathname === "/login") {
+      return <>{children}</>;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -33,11 +38,6 @@ export function MainLayout({ children }) {
         </main>
       </div>
 
-      <div className="absolute"> 
-        {/* Render FAB and Modal outside the main flow but inside layout */}
-        {!agentOpen && <AgentFab onClick={() => setAgentOpen(true)} />}
-        <AgentModal isOpen={agentOpen} onClose={() => setAgentOpen(false)} />
-      </div>
     </div>
   );
 }
