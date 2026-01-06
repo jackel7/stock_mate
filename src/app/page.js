@@ -9,11 +9,9 @@ export default function Dashboard() {
   const [stats, setStats] = useState({
     products: 0,
     lowStock: 0,
-    transactions: 0,
     vendors: 0,
     totalValue: 0,
   });
-  const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +26,6 @@ export default function Dashboard() {
       if (data.error) throw new Error(data.error);
 
       setStats(data.stats);
-      setRecentActivity(data.recentActivity);
     } catch (error) {
       console.error("Error loading dashboard:", error);
     } finally {

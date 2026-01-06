@@ -22,11 +22,9 @@ export async function GET() {
       stats: {
         products: productsCount || 0,
         lowStock: lowStockCount || 0,
-        transactions: 0, 
         vendors: vendorsCount || 0,
         totalValue: totalVal,
       },
-      recentActivity: []
     });
   } catch (error) {
     console.error("Dashboard API Error:", error);

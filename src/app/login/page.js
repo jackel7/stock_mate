@@ -21,24 +21,17 @@ export default function LoginPage() {
       // 1. Check for Dummy Admin Credentials
       if (email === "admin@stockmate.com" && password === "admin123") {
         localStorage.setItem("stockmate_mock_session", "true");
-        // Force a hard reload to ensure AuthProvider picks up the localStorage change immediately
         window.location.href = "/"; 
         return;
       }
 
-      // 2. Fallback to Real Supabase Login
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
       
       router.push("/");
       router.refresh();
 
     } catch (err) {
       setError(err.message || "Invalid login credentials.");
-      setLoading(false); // Only stop loading on error, success redirects
+      setLoading(false); 
     }
   };
 

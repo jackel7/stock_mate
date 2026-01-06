@@ -154,9 +154,6 @@ export default function InventoryPage() {
             />
         </div>
         <div className="flex items-center space-x-2 w-full sm:w-auto">
-             <Button variant="outline" className="w-full sm:w-auto text-surface-600 border-surface-200 hover:text-brand-600 hover:border-brand-200 hover:bg-brand-50">
-                <Filter className="mr-2 h-4 w-4" /> Filter
-             </Button>
              <div className="border-l border-gray-200 h-6 mx-2 hidden sm:block"></div>
              <div className="flex bg-gray-100 p-1 rounded-lg">
                 <button 
@@ -320,6 +317,9 @@ export default function InventoryPage() {
                                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-200" onClick={(e) => e.stopPropagation()}>
                                          <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-full border border-transparent hover:border-brand-100" onClick={() => openEditModal(product)}>
                                             <Edit className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full border border-transparent hover:border-red-100" onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}>
+                                            <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </div>

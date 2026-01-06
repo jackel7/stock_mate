@@ -89,18 +89,7 @@ export default function VendorsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this vendor?")) {
-        try {
-            const res = await fetch(`/api/vendors/${id}`, { method: 'DELETE' });
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
-            fetchVendors();
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-  };
+
 
   return (
     <div className="space-y-6">
@@ -186,9 +175,7 @@ export default function VendorsPage() {
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg" onClick={() => handleEdit(vendor)}>
                         <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" onClick={() => handleDelete(vendor.id)}>
-                        <Trash2 className="h-4 w-4" />
-                        </Button>
+
                     </div>
                   </TableCell>
                 </TableRow>
